@@ -4,8 +4,8 @@ package mainPackage;
  * The Class SquareMatrix.
  * 
  * @author Derek Sanders
- * @version 1.0
- * @since December 5th, 2014
+ * @version 1.1
+ * @since December 6th, 2014
  */
 public class SquareMatrix {
 
@@ -131,6 +131,8 @@ public class SquareMatrix {
 
 		int n = this.rows.length;
 
+		int steps = 1;
+
 		SquareMatrix identity = SquareMatrix.createIdentityMatrix(n);
 
 		while (!this.equals(identity)) {
@@ -146,10 +148,16 @@ public class SquareMatrix {
 					try {
 
 						this.rows[i].swapRow(this.rows[i + p]);
+						System.out.println("Step " + steps + ": Swapped rows "
+								+ (i + 1) + " and " + (i + p + 1));
+						steps++;
 
 					} catch (IndexOutOfBoundsException e) {
 
 						this.rows[i].swapRow(this.rows[i - p]);
+						System.out.println("Step " + steps + ": Swapped rows "
+								+ (i + 1) + " and " + (i - p + 1));
+						steps++;
 					}
 
 					p++;
@@ -160,11 +168,15 @@ public class SquareMatrix {
 					}
 				}
 
-				if (this.rows[i].getCoordinates()[i] != 0) {
+				if (this.rows[i].getCoordinates()[i] != 0
+						&& this.rows[i].getCoordinates()[i] != 1) {
 
+					System.out.println("Step " + steps + ": Multiplied row "
+							+ (i + 1) + " by "
+							+ (1.0 / this.rows[i].getCoordinates()[i]));
+					steps++;
 					this.rows[i].multiplyRow(1.0 / this.rows[i]
 							.getCoordinates()[i]);
-
 				}
 
 				if (this.equals(identity)) {
@@ -181,7 +193,7 @@ public class SquareMatrix {
 						j++;
 					}
 
-					if (j == 3) {
+					if (j == n) {
 
 						return;
 					}
@@ -190,11 +202,23 @@ public class SquareMatrix {
 
 						if (this.rows[j].getCoordinates()[i] >= 1) {
 
-							this.rows[j].subtractRow(this.rows[i]);
+							System.out.println("Step " + steps
+									+ ": Subtracted row " + (i + 1) + " * "
+									+ this.rows[j].coordinates[i]
+									+ " from row " + (j + 1));
+							steps++;
+							this.rows[j].subtractRow(this.rows[i],
+									this.rows[j].coordinates[i]);
 
 						} else if (this.rows[j].getCoordinates()[i] < 1) {
 
-							this.rows[j].addRow(this.rows[i]);
+							System.out.println("Step " + steps + ": Added row "
+									+ (i + 1) + " * "
+									+ Math.abs(this.rows[j].coordinates[i])
+									+ " to row " + (j + 1));
+							steps++;
+							this.rows[j].addRow(this.rows[i],
+									Math.abs(this.rows[j].coordinates[i]));
 						}
 					}
 
@@ -250,7 +274,8 @@ public class SquareMatrix {
 					}
 				}
 
-				if (this.rows[i].getCoordinates()[i] != 0) {
+				if (this.rows[i].getCoordinates()[i] != 0
+						&& this.rows[i].getCoordinates()[i] != 1) {
 
 					inverse.rows[i].multiplyRow(1.0 / this.rows[i]
 							.getCoordinates()[i]);
@@ -283,15 +308,19 @@ public class SquareMatrix {
 
 						if (this.rows[j].getCoordinates()[i] >= 1) {
 
-							inverse.rows[j].subtractRow(inverse.rows[i]);
+							inverse.rows[j].subtractRow(inverse.rows[i],
+									this.rows[j].coordinates[i]);
 
-							this.rows[j].subtractRow(this.rows[i]);
+							this.rows[j].subtractRow(this.rows[i],
+									this.rows[j].coordinates[i]);
 
 						} else if (this.rows[j].getCoordinates()[i] < 1) {
 
-							inverse.rows[j].addRow(inverse.rows[i]);
+							inverse.rows[j].addRow(inverse.rows[i],
+									Math.abs(this.rows[j].coordinates[i]));
 
-							this.rows[j].addRow(this.rows[i]);
+							this.rows[j].addRow(this.rows[i],
+									Math.abs(this.rows[j].coordinates[i]));
 						}
 					}
 

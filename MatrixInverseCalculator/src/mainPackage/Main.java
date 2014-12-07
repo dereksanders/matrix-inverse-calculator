@@ -6,13 +6,14 @@ import java.util.Scanner;
  * The Class Main.
  * 
  * @author Derek Sanders
- * @version 1.0
- * @since December 5th, 2014
+ * @version 1.1
+ * @since December 6th, 2014
  */
 public class Main {
 
 	/**
-	 * The main method. Finds the inverse of a matrix provided by the user.
+	 * The main method. Row reduces and finds the inverse of the matrix provided
+	 * by the user.
 	 *
 	 * @param args
 	 *            the arguments
@@ -33,7 +34,7 @@ public class Main {
 
 		while (i < n) {
 
-			System.out.println("Row " + i + ": ");
+			System.out.println("Row " + (i + 1) + ": ");
 			String input = scanner.next();
 
 			String coordsAsString[] = input.split(",");
@@ -66,9 +67,15 @@ public class Main {
 
 		System.out.println("Original Matrix: " + "\n" + userMatrix);
 
-		SquareMatrix userInverse = userMatrix.getInverse();
+		SquareMatrix userMatrixCopy = userMatrix.clone();
 
-		System.out.println("Inverse Matrix: " + "\n" + userInverse);
+		userMatrix.getRREF();
+
+		System.out.println("RREF of Matrix: " + "\n" + userMatrix);
+
+		SquareMatrix userInverse = userMatrixCopy.getInverse();
+
+		System.out.println("Inverse of Matrix: " + "\n" + userInverse);
 
 	}
 }

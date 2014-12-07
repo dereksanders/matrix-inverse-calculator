@@ -1,4 +1,4 @@
-matrix-inverse-calculator v1.0
+matrix-inverse-calculator v1.1
 ==============================
 Coming in future releases:
 -GUI
@@ -6,4 +6,4 @@ Coming in future releases:
 -.jar executable file
 
 Authored by Derek Sanders
-Last Updated December 5th, 2014
+Last Updated December 6th, 2014

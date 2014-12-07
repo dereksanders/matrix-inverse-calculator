@@ -4,8 +4,8 @@ package mainPackage;
  * The Class RowVector.
  * 
  * @author Derek Sanders
- * @version 1.0
- * @since December 5th, 2014
+ * @version 1.1
+ * @since December 6th, 2014
  */
 public class RowVector {
 
@@ -103,6 +103,27 @@ public class RowVector {
 	}
 
 	/**
+	 * Adds a row vector multiplied by a scalar to the row vector.
+	 *
+	 * @param rowBeingAdded
+	 *            the row being added
+	 * @param scalar
+	 *            the scalar
+	 */
+	public void addRow(RowVector rowBeingAdded, double scalar) {
+
+		int i = 0;
+
+		while (i < this.coordinates.length) {
+
+			this.setCoordinate(i, this.coordinates[i]
+					+ (rowBeingAdded.coordinates[i] * scalar));
+
+			i++;
+		}
+	}
+
+	/**
 	 * Subtracts a row vector from the row vector.
 	 *
 	 * @param rowBeingSubtracted
@@ -116,6 +137,27 @@ public class RowVector {
 
 			this.setCoordinate(i, this.coordinates[i]
 					- rowBeingSubtracted.coordinates[i]);
+
+			i++;
+		}
+	}
+
+	/**
+	 * Subtracts a row vector multiplied by a scalar from the row vector.
+	 *
+	 * @param rowBeingSubtracted
+	 *            the row being subtracted
+	 * @param scalar
+	 *            the scalar
+	 */
+	public void subtractRow(RowVector rowBeingSubtracted, double scalar) {
+
+		int i = 0;
+
+		while (i < this.coordinates.length) {
+
+			this.setCoordinate(i, this.coordinates[i]
+					- (rowBeingSubtracted.coordinates[i] * scalar));
 
 			i++;
 		}
