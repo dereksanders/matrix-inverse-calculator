@@ -4,10 +4,12 @@ package mainPackage;
  * The Class SquareMatrix.
  * 
  * @author Derek Sanders
- * @version 1.1
- * @since December 6th, 2014
+ * @version 1.2
+ * @since December 8th, 2014
  */
 public class SquareMatrix {
+
+	private static int MAX_ITERATIONS = 200000;
 
 	private RowVector[] rows;
 
@@ -122,9 +124,14 @@ public class SquareMatrix {
 		return rowsCopy;
 	}
 
+	public SquareMatrix lDecomposition() {
+
+		return null;
+	}
+
 	/**
 	 * Performs row operations until the matrix is in Reduced Row Echelon Form
-	 * (RREF).
+	 * (RREF), and prints out each step.
 	 *
 	 */
 	public void getRREF() {
@@ -143,7 +150,8 @@ public class SquareMatrix {
 
 			while (i < this.rows.length) {
 
-				while (this.rows[i].getCoordinates()[i] == 0) {
+				while (this.rows[i].getCoordinates()[i] == 0
+						&& steps < MAX_ITERATIONS) {
 
 					try {
 
@@ -152,12 +160,19 @@ public class SquareMatrix {
 								+ (i + 1) + " and " + (i + p + 1));
 						steps++;
 
-					} catch (IndexOutOfBoundsException e) {
+					} catch (IndexOutOfBoundsException indexTooLarge) {
 
-						this.rows[i].swapRow(this.rows[i - p]);
-						System.out.println("Step " + steps + ": Swapped rows "
-								+ (i + 1) + " and " + (i - p + 1));
-						steps++;
+						try {
+							this.rows[i].swapRow(this.rows[i - p]);
+							System.out.println("Step " + steps
+									+ ": Swapped rows " + (i + 1) + " and "
+									+ (i - p + 1));
+							steps++;
+
+						} catch (IndexOutOfBoundsException negativeIndex) {
+
+							return;
+						}
 					}
 
 					p++;

@@ -6,8 +6,8 @@ import java.util.Scanner;
  * The Class Main.
  * 
  * @author Derek Sanders
- * @version 1.1
- * @since December 6th, 2014
+ * @version 1.2
+ * @since December 8th, 2014
  */
 public class Main {
 
@@ -64,18 +64,25 @@ public class Main {
 		scanner.close();
 
 		SquareMatrix userMatrix = new SquareMatrix(rowInput);
+		SquareMatrix identity = SquareMatrix.createIdentityMatrix(n);
+		SquareMatrix userMatrixCopy = userMatrix.clone();
 
 		System.out.println("Original Matrix: " + "\n" + userMatrix);
 
-		SquareMatrix userMatrixCopy = userMatrix.clone();
-
 		userMatrix.getRREF();
 
-		System.out.println("RREF of Matrix: " + "\n" + userMatrix);
+		if (userMatrix.equals(identity)) {
 
-		SquareMatrix userInverse = userMatrixCopy.getInverse();
+			System.out.println("RREF of Matrix: " + "\n" + userMatrix);
 
-		System.out.println("Inverse of Matrix: " + "\n" + userInverse);
+			SquareMatrix userInverse = userMatrixCopy.getInverse();
+
+			System.out.println("Inverse of Matrix: " + "\n" + userInverse);
+
+		} else {
+
+			System.out.println("This matrix is non-invertible.");
+		}
 
 	}
 }
