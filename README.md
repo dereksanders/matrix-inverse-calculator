@@ -1,4 +1,4 @@
-matrix-inverse-calculator v1.2
+matrix-inverse-calculator v1.3
 ==============================
 Coming in future releases:
 
@@ -8,4 +8,4 @@ Coming in future releases:
 
 Authored by Derek Sanders
 
-Last Updated December 8th, 2014
+Last Updated January 29th, 2015
