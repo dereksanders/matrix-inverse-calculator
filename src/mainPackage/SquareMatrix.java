@@ -4,14 +4,19 @@ package mainPackage;
  * The Class SquareMatrix.
  * 
  * @author Derek Sanders
- * @version 1.2
- * @since December 8th, 2014
+ * @version 2.0
+ * @since June 30th, 2015
  */
 public class SquareMatrix {
 
-	private static int MAX_ITERATIONS = 200000;
+	private static int MAX_ITERATIONS = 200000; // Arbitrarily large value used
+												// to cease row reduction of a
+												// matrix when finding its
+												// inverse if the matrix is not
+												// invertible.
 
 	private RowVector[] rows;
+	private int dimension;
 
 	/**
 	 * Instantiates a new square matrix.
@@ -24,6 +29,7 @@ public class SquareMatrix {
 		try {
 
 			this.setRows(rows);
+			this.setDimension(this.rows.length);
 
 		} catch (IllegalMatrixException e) {
 
@@ -124,6 +130,11 @@ public class SquareMatrix {
 		return rowsCopy;
 	}
 
+	/**
+	 * L decomposition.
+	 *
+	 * @return the square matrix
+	 */
 	public SquareMatrix lDecomposition() {
 
 		return null;
@@ -131,31 +142,34 @@ public class SquareMatrix {
 
 	/**
 	 * Performs row operations until the matrix is in Reduced Row Echelon Form
-	 * (RREF), and prints out each step.
+	 * (RREF), and prints out each step. Deprecated method, not currently used
+	 * in program.
 	 *
+	 * @return the rref
 	 */
-	public void getRREF() {
+	public SquareMatrix getRREF() {
 
-		int n = this.rows.length;
+		SquareMatrix matrixCopy = this.clone();
+		int n = matrixCopy.rows.length;
 
 		int steps = 1;
 
 		SquareMatrix identity = SquareMatrix.createIdentityMatrix(n);
 
-		while (!this.equals(identity)) {
+		while (!matrixCopy.equals(identity)) {
 
 			int i = 0;
 
 			int p = 1;
 
-			while (i < this.rows.length) {
+			while (i < matrixCopy.rows.length) {
 
-				while (this.rows[i].getCoordinates()[i] == 0
+				while (matrixCopy.rows[i].getCoordinates()[i] == 0
 						&& steps < MAX_ITERATIONS) {
 
 					try {
 
-						this.rows[i].swapRow(this.rows[i + p]);
+						matrixCopy.rows[i].swapRow(matrixCopy.rows[i + p]);
 						System.out.println("Step " + steps + ": Swapped rows "
 								+ (i + 1) + " and " + (i + p + 1));
 						steps++;
@@ -163,7 +177,7 @@ public class SquareMatrix {
 					} catch (IndexOutOfBoundsException indexTooLarge) {
 
 						try {
-							this.rows[i].swapRow(this.rows[i - p]);
+							matrixCopy.rows[i].swapRow(matrixCopy.rows[i - p]);
 							System.out.println("Step " + steps
 									+ ": Swapped rows " + (i + 1) + " and "
 									+ (i - p + 1));
@@ -171,7 +185,7 @@ public class SquareMatrix {
 
 						} catch (IndexOutOfBoundsException negativeIndex) {
 
-							return;
+							return matrixCopy;
 						}
 					}
 
@@ -183,25 +197,25 @@ public class SquareMatrix {
 					}
 				}
 
-				if (this.rows[i].getCoordinates()[i] != 0
-						&& this.rows[i].getCoordinates()[i] != 1) {
+				if (matrixCopy.rows[i].getCoordinates()[i] != 0
+						&& matrixCopy.rows[i].getCoordinates()[i] != 1) {
 
 					System.out.println("Step " + steps + ": Multiplied row "
 							+ (i + 1) + " by "
-							+ (1.0 / this.rows[i].getCoordinates()[i]));
+							+ (1.0 / matrixCopy.rows[i].getCoordinates()[i]));
 					steps++;
-					this.rows[i].multiplyRow(1.0 / this.rows[i]
+					matrixCopy.rows[i].multiplyRow(1.0 / matrixCopy.rows[i]
 							.getCoordinates()[i]);
 				}
 
-				if (this.equals(identity)) {
+				if (matrixCopy.equals(identity)) {
 
-					return;
+					return matrixCopy;
 				}
 
 				int j = 0;
 
-				while (j < this.rows.length) {
+				while (j < matrixCopy.rows.length) {
 
 					if (j == i) {
 
@@ -210,30 +224,35 @@ public class SquareMatrix {
 
 					if (j == n) {
 
-						return;
+						return matrixCopy;
 					}
 
-					while (this.rows[j].getCoordinates()[i] != 0) {
+					while (matrixCopy.rows[j].getCoordinates()[i] != 0) {
 
-						if (this.rows[j].getCoordinates()[i] >= 1) {
+						if (matrixCopy.rows[j].getCoordinates()[i] >= 1) {
 
 							System.out.println("Step " + steps
 									+ ": Subtracted row " + (i + 1) + " * "
-									+ this.rows[j].coordinates[i]
+									+ matrixCopy.rows[j].coordinates[i]
 									+ " from row " + (j + 1));
 							steps++;
-							this.rows[j].subtractRow(this.rows[i],
-									this.rows[j].coordinates[i]);
+							matrixCopy.rows[j].subtractRow(matrixCopy.rows[i],
+									matrixCopy.rows[j].coordinates[i]);
 
-						} else if (this.rows[j].getCoordinates()[i] < 1) {
+						} else if (matrixCopy.rows[j].getCoordinates()[i] < 1) {
 
-							System.out.println("Step " + steps + ": Added row "
-									+ (i + 1) + " * "
-									+ Math.abs(this.rows[j].coordinates[i])
-									+ " to row " + (j + 1));
+							System.out
+									.println("Step "
+											+ steps
+											+ ": Added row "
+											+ (i + 1)
+											+ " * "
+											+ Math.abs(matrixCopy.rows[j].coordinates[i])
+											+ " to row " + (j + 1));
 							steps++;
-							this.rows[j].addRow(this.rows[i],
-									Math.abs(this.rows[j].coordinates[i]));
+							matrixCopy.rows[j]
+									.addRow(matrixCopy.rows[i],
+											Math.abs(matrixCopy.rows[j].coordinates[i]));
 						}
 					}
 
@@ -243,42 +262,42 @@ public class SquareMatrix {
 				i++;
 			}
 		}
+		return matrixCopy;
 	}
 
 	/**
-	 * Performs row operations until the matrix is in Reduced Row Echelon Form
-	 * (RREF). Simultaneously performs these operations on the identity matrix
-	 * in order to find the inverse of the matrix.
+	 * Performs row operations on a clone of the original matrix until it is in
+	 * Reduced Row Echelon Form (RREF). Simultaneously performs these operations
+	 * on the identity matrix in order to find the inverse of the matrix.
 	 *
 	 * @return the inverse
 	 */
 	public SquareMatrix getInverse() {
 
-		int n = this.rows.length;
-
+		SquareMatrix matrixCopy = this.clone();
+		int n = matrixCopy.rows.length;
 		SquareMatrix identity = SquareMatrix.createIdentityMatrix(n);
-
 		SquareMatrix inverse = SquareMatrix.createIdentityMatrix(n);
 
-		while (!this.equals(identity)) {
+		while (!matrixCopy.equals(identity)) {
 
 			int i = 0;
 
 			int p = 1;
 
-			while (i < this.rows.length) {
+			while (i < matrixCopy.rows.length) {
 
-				while (this.rows[i].getCoordinates()[i] == 0) {
+				while (matrixCopy.rows[i].getCoordinates()[i] == 0) {
 
 					try {
 
 						inverse.rows[i].swapRow(inverse.rows[i + p]);
-						this.rows[i].swapRow(this.rows[i + p]);
+						matrixCopy.rows[i].swapRow(matrixCopy.rows[i + p]);
 
 					} catch (IndexOutOfBoundsException e) {
 
 						inverse.rows[i].swapRow(inverse.rows[i - p]);
-						this.rows[i].swapRow(this.rows[i - p]);
+						matrixCopy.rows[i].swapRow(matrixCopy.rows[i - p]);
 					}
 
 					p++;
@@ -289,25 +308,24 @@ public class SquareMatrix {
 					}
 				}
 
-				if (this.rows[i].getCoordinates()[i] != 0
-						&& this.rows[i].getCoordinates()[i] != 1) {
+				if (matrixCopy.rows[i].getCoordinates()[i] != 0
+						&& matrixCopy.rows[i].getCoordinates()[i] != 1) {
 
-					inverse.rows[i].multiplyRow(1.0 / this.rows[i]
+					inverse.rows[i].multiplyRow(1.0 / matrixCopy.rows[i]
 							.getCoordinates()[i]);
 
-					this.rows[i].multiplyRow(1.0 / this.rows[i]
+					matrixCopy.rows[i].multiplyRow(1.0 / matrixCopy.rows[i]
 							.getCoordinates()[i]);
-
 				}
 
-				if (this.equals(identity)) {
+				if (matrixCopy.equals(identity)) {
 
 					return inverse;
 				}
 
 				int j = 0;
 
-				while (j < this.rows.length) {
+				while (j < matrixCopy.rows.length) {
 
 					if (j == i) {
 
@@ -319,23 +337,25 @@ public class SquareMatrix {
 						return inverse;
 					}
 
-					while (this.rows[j].getCoordinates()[i] != 0) {
+					while (matrixCopy.rows[j].getCoordinates()[i] != 0) {
 
-						if (this.rows[j].getCoordinates()[i] >= 1) {
+						if (matrixCopy.rows[j].getCoordinates()[i] >= 1) {
 
 							inverse.rows[j].subtractRow(inverse.rows[i],
-									this.rows[j].coordinates[i]);
+									matrixCopy.rows[j].coordinates[i]);
 
-							this.rows[j].subtractRow(this.rows[i],
-									this.rows[j].coordinates[i]);
+							matrixCopy.rows[j].subtractRow(matrixCopy.rows[i],
+									matrixCopy.rows[j].coordinates[i]);
 
-						} else if (this.rows[j].getCoordinates()[i] < 1) {
+						} else if (matrixCopy.rows[j].getCoordinates()[i] < 1) {
 
-							inverse.rows[j].addRow(inverse.rows[i],
-									Math.abs(this.rows[j].coordinates[i]));
+							inverse.rows[j]
+									.addRow(inverse.rows[i],
+											Math.abs(matrixCopy.rows[j].coordinates[i]));
 
-							this.rows[j].addRow(this.rows[i],
-									Math.abs(this.rows[j].coordinates[i]));
+							matrixCopy.rows[j]
+									.addRow(matrixCopy.rows[i],
+											Math.abs(matrixCopy.rows[j].coordinates[i]));
 						}
 					}
 
@@ -348,6 +368,10 @@ public class SquareMatrix {
 
 		return inverse;
 	}
+
+	// public SquareMatrix getChangeOfBasis() {
+	//
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -422,5 +446,23 @@ public class SquareMatrix {
 		}
 
 		return matrixInfo;
+	}
+
+	/**
+	 * Gets the dimension.
+	 *
+	 * @return the dimension
+	 */
+	public int getDimension() {
+		return dimension;
+	}
+
+	/**
+	 * Sets the dimension.
+	 *
+	 * @param dimension the new dimension
+	 */
+	public void setDimension(int dimension) {
+		this.dimension = dimension;
 	}
 }
